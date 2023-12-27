@@ -33,7 +33,7 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-export default async function UsersManageTable() {
+export default function UsersManageTable() {
 
   return (
     <CustomTable

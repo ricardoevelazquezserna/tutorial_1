@@ -1,7 +1,5 @@
-type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
-
-interface RequestOptions {
-  method?: Method
+export interface RequestOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   headers?: Record<string, string>
   body?: Record<string, unknown> | FormData
 }

@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Layout, Menu, Button, Breadcrumb, Divider, theme } from 'antd';
-import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import { Layout, Menu, Button, Breadcrumb, theme } from 'antd';
+import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined, DashboardOutlined } from '@ant-design/icons';
 import styles from '@/app/styles/pages-layout.module.css';
-import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
 import { getBreadcrumbItems } from '@/utils/breadcrumb';
 import { ItemType } from 'antd/es/breadcrumb/Breadcrumb';
+import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 
 const { Header, Sider, Content } = Layout;
 
@@ -15,17 +15,17 @@ export default function PagesLayout({ children }: { children: React.ReactNode}) 
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
+  const { token: { colorBgContainer } } = theme.useToken();
   const [breadCrumbItems, setItems] = useState<ItemType[]>([]);
 
   const siderItems: MenuItemType[] = [
     {
-      key: 'dashboard',
-      icon: <UserOutlined />,
+      key: '/dashboard',
+      icon: <DashboardOutlined />,
       label: 'Dashboard',
     },
     {
-      key: 'users/manage',
+      key: '/users/manage',
       icon: <UserOutlined />,
       label: 'Users',
     },
@@ -67,7 +67,9 @@ export default function PagesLayout({ children }: { children: React.ReactNode}) 
           </Header>
           <Content style={{ margin: '16px', minHeight: "100vh" }}>
             <Breadcrumb items={breadCrumbItems} className='breadCrumbContainer' />
-            {children}
+            <div className='contentContainer'>
+              {children}
+            </div>
           </Content>
         </Layout>
       </Layout>
