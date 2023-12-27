@@ -45,7 +45,14 @@ export default function PagesLayout({ children }: { children: React.ReactNode}) 
 
   return (
       <Layout>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          breakpoint="lg"
+          collapsedWidth="0"
+          onBreakpoint={(broken) => (broken) ? setCollapsed(true) : setCollapsed(false)}
+        >
           <div className={styles.logoContainer}>
             <div className={styles.logo} />
           </div>

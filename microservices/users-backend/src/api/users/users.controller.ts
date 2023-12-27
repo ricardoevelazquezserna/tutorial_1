@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Res, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Get,
+  Query,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateBulkUsersDto, CreateUserDto, FindAllParams } from './dtos';
 
@@ -28,5 +37,23 @@ export class UsersController {
   async findAll(@Res() res: any, @Query() params: FindAllParams) {
     const users = await this.usersService.findAll(params);
     return res.status(200).json(users);
+  }
+
+  @Get(':id')
+  async findById(@Res() res: any, @Param('id') id: string) {
+    const user = await this.usersService.findById(id);
+    return res.status(200).json(user);
+  }
+
+  @Delete(':id')
+  async removeById(@Res() res: any, @Param('id') id: string) {
+    await this.usersService.removeById(id);
+
+    const response = {
+      statusCode: 200,
+      message: `User was deleted.`,
+    };
+
+    return res.status(200).json(response);
   }
 }

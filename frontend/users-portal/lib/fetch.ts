@@ -23,8 +23,10 @@ export async function fetchRequest(
     };
   
     const response = await fetch(url, reqOptions);
-  
-    return await response.json();
+
+    if (response.ok) return await response.json();
+
+    return Promise.reject(response.statusText);    
   } catch (error) {
     console.error(error);
     return Promise.reject(error);

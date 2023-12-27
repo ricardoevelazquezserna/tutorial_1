@@ -17,3 +17,9 @@ export async function createUser(payload: CreateUserType) {
 
   return await fetchRequest(url, options);
 }
+
+export async function deleteUser(id: string) {
+  const url = `users/${id}`;
+  const options: RequestOptions = { method: 'DELETE' };
+  return await fetchRequest(url, options);
+}

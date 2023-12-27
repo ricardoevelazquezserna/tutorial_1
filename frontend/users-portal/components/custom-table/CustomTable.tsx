@@ -16,12 +16,14 @@ type CustomTableProps = {
   onChange: (queryParams: string | null) => Promise<any>,
   rowKey?: string;
   size?: SizeType;
+  needRefresh?: boolean;
 }
 
 export default function CustomTable(props: CustomTableProps) {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
   const [pagination, setPagination] = useState(DEFAULT_PAGINATION);
+  const [queryParams, setQueryParams] = useState('');
 
   const onChange: TableProps<any>['onChange'] = (pagination, filters, sorter, extra) => {
     let params = [];
@@ -40,7 +42,8 @@ export default function CustomTable(props: CustomTableProps) {
     }
 
     const queryParams = `?${params.join('&')}`;
-    console.log(queryParams);
+
+    setQueryParams(queryParams);
     getItems(queryParams);
   };
 
@@ -61,6 +64,16 @@ export default function CustomTable(props: CustomTableProps) {
   }
 
   useEffect(() => { if (props) getItems() }, []);
+
+  useEffect(
+    () => { 
+      if (props && props.needRefresh) {
+        console.log('needRefresh');
+        getItems(queryParams);
+      }
+    },
+    [props]
+  );
 
   return (
     <Table
