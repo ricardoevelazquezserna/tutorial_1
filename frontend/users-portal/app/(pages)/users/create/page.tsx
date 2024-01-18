@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { notification } from "antd";
-import UsersForm, { CreateUserType } from "../(components)/UsersForm";
-import { createUser } from "../(components)/actions";
+import UsersForm, { CreateUserType } from "../_components/UsersForm";
+import { createUser } from "../_components/actions";
 
 export default function UsersCreate() {
   const [submitted, setSubmitted] = useState(false);

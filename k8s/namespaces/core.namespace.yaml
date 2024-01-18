@@ -2,7 +2,7 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: sales
+  name: core
   labels:
-    name: sales
+    name: core
     istio-injection: enabled

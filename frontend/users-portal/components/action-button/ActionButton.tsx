@@ -38,7 +38,7 @@ export default function ActionButton(props: ActionButtonType) {
       okText={props.okText || "Confirm"}
       cancelText={props.cancelText || "Close"}
     >
-      <Button size='small' loading={loading}>
+      <Button size='small' shape='round' loading={loading}>
         {props.buttonText}
       </Button>
     </Popconfirm>

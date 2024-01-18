@@ -1,6 +1,6 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; 
 
 .breadCrumbContainer {
   height: 40px;
@@ -14,4 +14,12 @@
   background-color: white;
   padding: 16px;
   border-radius: 8px;
+}
+
+.ant-btn-primary {
+  background: #1677ff !important;
+}
+
+.ant-typography {
+  margin-bottom: 0 !important;
 }

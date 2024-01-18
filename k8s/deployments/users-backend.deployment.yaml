@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-be-v2-deployment
+  namespace: core
+  labels:
+    app: "users-be"
+    version: "v2"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "users-be"
+  template:
+    metadata:
+      labels:
+        app: "users-be"
+        version: "v2"
+    spec:
+      containers:
+        - name: backend
+          image: ricardo117/users-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_CONNECTION_STRING
+              value: "mongodb+srv://ricardovelazquez:Cf5zKru2zvBIVCpA@cluster0.fkwrr.mongodb.net/tutorial?retryWrites=true&w=majority"
+            - name: VERSION
+              value: "v2"
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 10.96.0.10
+        searches:
+          - cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-be-svc
+  namespace: core
+  labels:
+    app: users-be
+spec:
+  selector:
+    app: users-be
+  ports:
+    - port: 80
+      protocol: TCP
+      name: http
+      targetPort: 8080

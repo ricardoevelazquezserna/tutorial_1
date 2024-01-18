@@ -7,9 +7,15 @@ import {
   Query,
   Delete,
   Param,
+  Put,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateBulkUsersDto, CreateUserDto, FindAllParams } from './dtos';
+import {
+  CreateBulkUsersDto,
+  CreateUserDto,
+  FindAllParams,
+  UpdateUserDto,
+} from './dtos';
 
 @Controller('users')
 export class UsersController {
@@ -33,6 +39,22 @@ export class UsersController {
     return res.status(201).json(response);
   }
 
+  @Put(':id')
+  async update(
+    @Res() res: any,
+    @Param('id') id: string,
+    @Body() dto: UpdateUserDto,
+  ) {
+    await this.usersService.update(id, dto);
+
+    const response = {
+      statusCode: 200,
+      message: `User was updated.`,
+    };
+
+    return res.status(200).json(response);
+  }
+
   @Get()
   async findAll(@Res() res: any, @Query() params: FindAllParams) {
     const users = await this.usersService.findAll(params);
@@ -41,7 +63,7 @@ export class UsersController {
 
   @Get(':id')
   async findById(@Res() res: any, @Param('id') id: string) {
-    const user = await this.usersService.findById(id);
+    const user = await this.usersService.findOne({ _id: id });
     return res.status(200).json(user);
   }
 

@@ -11,6 +11,45 @@
 # Create Kind cluster
 kind create cluster --name tutorial-1 --config kind/cluster.config.yaml
 
+# Local LB # Installation Guide https://istio.io/latest/docs/setup/platform-setup/kind/
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+docker network inspect -f '{{.IPAM.Config}}' kind
+kubectl apply -f kind/metallb-ippool.yaml
+
+# Istio
+$ curl -L https://istio.io/downloadIstio | sh -
+$ cd istio-1.19.3
+$ export PATH=$PWD/bin:$PATH
+$ cd istio-1.19.3
+$ istioctl install --set profile=demo -y
+$ kubectl label namespace default istio-injection=enabled
+# $ kubectl apply -f k8s/deployments/users-backend.deployment.yaml # v1 and v2
+# $ kubectl apply -f istio/users.gateway.yaml
+# $ kubectl apply -f istio/users.destinationrule.yaml
+# $ kubectl apply -f istio/users.virtualservice.yaml
+$ kubectl get svc istio-ingressgateway -n istio-system
+
+$ export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+$ export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+$ export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+$ export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+$ echo $GATEWAY_URL
+
+# View dashboards
+$ kubectl apply -f samples/addons
+$ kubectl rollout status deployment/kiali -n istio-system
+$ istioctl dashboard kiali
+
+
+
+export INGRESS_NAME=istio-ingressgateway
+export INGRESS_NS=istio-system
+export INGRESS_HOST=$(kubectl -n "$INGRESS_NS" get service "$INGRESS_NAME" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_PORT=$(kubectl -n "$INGRESS_NS" get service "$INGRESS_NAME" -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+export SECURE_INGRESS_PORT=$(kubectl -n "$INGRESS_NS" get service "$INGRESS_NAME" -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+export TCP_INGRESS_PORT=$(kubectl -n "$INGRESS_NS" get service "$INGRESS_NAME" -o jsonpath='{.spec.ports[?(@.name=="tcp")].port}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
 # Verify cluster
 kind get clusters
 
@@ -18,7 +57,7 @@ kind get clusters
 kubectl cluster-info --context tutorial-1
 
 # Delete cluster (optional)
-kind delete cluster
+kind delete cluster --name tutorial-1
 
 # Get namespaces (https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 kubectl get namespaces
@@ -118,6 +157,7 @@ npm run start:dev
 # Create notifications-backend
 nest new notifications-backend
 npm i --save amqplib amqp-connection-manager @nestjs/microservices
+
 
 ```
 

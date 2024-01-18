@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Flex, Button, Typography } from 'antd';
-import UsersManageTable from '../(components)/UsersManageTable';
+import UsersManageTable from '../_components/UsersManageTable';
 
 const { Title } = Typography;
 

@@ -2,11 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import { Connection, Model } from 'mongoose';
 import { User } from './schemas';
-import { CreateBulkUsersDto, CreateUserDto, FindAllParams } from './dtos';
 import { UserEntity } from './entities';
 import { UserStatusEnum } from './enums';
 import { DEFAULT_LIMIT, DEFAULT_OFFSET } from 'src/shared/constants';
 import { IFindResponse } from 'src/shared/interfaces';
+import {
+  CreateBulkUsersDto,
+  CreateUserDto,
+  FindAllParams,
+  FindOneParams,
+} from './dtos';
 
 @Injectable()
 export class UsersService {
@@ -61,6 +66,18 @@ export class UsersService {
     }
   }
 
+  async update(id: string, dto: CreateUserDto): Promise<void> {
+    try {
+      const filters = { _id: id };
+
+      await this.userModel.updateOne(filters, dto);
+
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   async findAll(params: FindAllParams): Promise<IFindResponse> {
     try {
       const { name, lastName, email, status } = params;
@@ -104,9 +121,9 @@ export class UsersService {
     }
   }
 
-  async findById(id: string): Promise<UserEntity> {
+  async findOne(params: FindOneParams): Promise<UserEntity> {
     try {
-      const response = await this.userModel.findById(id);
+      const response = await this.userModel.findOne(params);
 
       if (!response) throw new NotFoundException('User not found.');
 

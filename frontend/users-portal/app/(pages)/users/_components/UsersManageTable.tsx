@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import type { ColumnsType } from 'antd/es/table';
+import { notification } from 'antd';
 import { ActionButton, CustomTable } from '@/components';
 import { deleteUser, getUsers } from './actions';
-import { notification } from 'antd';
+import { getUniqueKey } from '@/lib/utils';
+import type { ColumnsType } from 'antd/es/table';
+import { useRouter } from 'next/navigation';
 
 type DataType = {
   id: string;
@@ -13,10 +15,12 @@ type DataType = {
 }
 
 export default function UsersManageTable() {
-  const [refresh, setRefresh] = useState(false);
+  const [refreshKey, setRefreshKey] = useState('');
+  const router = useRouter();
 
   const onSuccess = () => {
-    setRefresh(true);
+    const key = getUniqueKey();
+    setRefreshKey(key);
     notification.success({ message: 'Success!', description: 'User was deleted.' });
   }
 
@@ -48,6 +52,7 @@ export default function UsersManageTable() {
       title: '',
       dataIndex: 'id',
       width: 100,
+      align: 'center',
       render: (value) => (
         <ActionButton
           buttonText='Delete'
@@ -59,11 +64,17 @@ export default function UsersManageTable() {
     },
   ];
 
+  const onRowClick = (record: DataType, index: number | undefined) => {
+    router.push(`/users/${record.id}`)
+
+  }
+
   return (
     <CustomTable
       columns={columns}
       onChange={getUsers}
-      needRefresh={refresh}
+      onRowClick={onRowClick}
+      refreshKey={refreshKey}
       rowKey={'id'}
     />
   )

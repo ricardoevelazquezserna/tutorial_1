@@ -12,11 +12,12 @@ const DEFAULT_PAGINATION = {
 }
 
 type CustomTableProps = {
-  columns: any[]
-  onChange: (queryParams: string | null) => Promise<any>,
+  columns: any[];
+  onChange: (queryParams: string | null) => Promise<any>;
   rowKey?: string;
   size?: SizeType;
-  needRefresh?: boolean;
+  refreshKey?: string;
+  onRowClick?: (record: any, index: number | undefined) => any;
 }
 
 export default function CustomTable(props: CustomTableProps) {
@@ -63,12 +64,21 @@ export default function CustomTable(props: CustomTableProps) {
     }
   }
 
-  useEffect(() => { if (props) getItems() }, []);
+  const onRowClick = (record: any, index: number | undefined) => {
+    if (props.onRowClick) props.onRowClick(record, index);
+  }
+
+  const onRow = (record: any, index: number | undefined) => {
+    return {
+      onDoubleClick: (event: any) => onRowClick(record, index),
+    }
+  }
+
+  useEffect(() => { if (props) getItems(); }, []);
 
   useEffect(
     () => { 
-      if (props && props.needRefresh) {
-        console.log('needRefresh');
+      if (props && props.refreshKey) {
         getItems(queryParams);
       }
     },
@@ -84,6 +94,8 @@ export default function CustomTable(props: CustomTableProps) {
       rowKey={props.rowKey || 'id'}
       loading={loading}
       pagination={pagination}
+      onRow={onRow}
+      rowClassName={'cursor-pointer'}
     />
   )
 }

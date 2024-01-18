@@ -4,6 +4,7 @@ export class UserEntity {
   middleName?: string;
   lastName: string;
   email: string;
+  birthDate: string;
   status: string;
   lastSessionAt: string;
   createdAt: string;

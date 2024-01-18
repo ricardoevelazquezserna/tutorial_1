@@ -1,7 +1,7 @@
 export interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
   headers?: Record<string, string>
-  body?: Record<string, unknown> | FormData
+  body?: Record<string, any> | FormData
 }
 
 export async function fetchRequest(
@@ -23,12 +23,12 @@ export async function fetchRequest(
     };
   
     const response = await fetch(url, reqOptions);
+    const json = await response.json();
 
-    if (response.ok) return await response.json();
+    if (response.ok) return Promise.resolve(json);
 
-    return Promise.reject(response.statusText);    
+    return Promise.reject(json.message);    
   } catch (error) {
-    console.error(error);
     return Promise.reject(error);
   }
 }
