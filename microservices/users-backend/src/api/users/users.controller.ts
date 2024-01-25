@@ -8,7 +8,10 @@ import {
   Delete,
   Param,
   Put,
+  Inject,
 } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { UsersService } from './users.service';
 import {
   CreateBulkUsersDto,
@@ -19,11 +22,17 @@ import {
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    @Inject('NOTIFICATION_SERVICE') private readonly client: ClientProxy,
+    private readonly usersService: UsersService,
+  ) {}
 
   @Post()
   async create(@Res() res: any, @Body() dto: CreateUserDto) {
     const user = await this.usersService.create(dto);
+
+    await firstValueFrom(this.client.emit('user_created', user));
+
     return res.status(201).json(user);
   }
 
